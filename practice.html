@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我嘅廣東話練習 — My Cantonese Practice</title>
+<style>
+  :root{--red:#c8102e;--gold:#e8a317;--ink:#1c2330;--soft:#f6f4f0;--line:#e7e2d9;--good:#1a9e54;--bad:#e0413a;--jp:#b8460e;--clf:#7b4ca0;}
+  *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  body{margin:0;background:linear-gradient(160deg,#fbeeec,#fbf7f0);color:var(--ink);min-height:100vh;}
+  header{text-align:center;padding:26px 16px 8px;}
+  header h1{margin:0;font-size:26px;}
+  header h1 .b{color:var(--red);}header h1 .r{color:var(--gold);}
+  header p{margin:6px 0 0;color:#5a6473;font-size:14px;}
+  .stats{display:flex;gap:10px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 16px;min-width:88px;text-align:center;box-shadow:0 1px 3px rgba(80,40,20,.05);}
+  .stat b{display:block;font-size:22px;color:var(--red);}
+  .stat span{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#8a93a3;}
+  .bar{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;align-items:center;margin:-2px 0 4px;}
+  .tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 16px 18px;}
+  .tabs button{border:1px solid var(--line);background:#fff;padding:9px 16px;border-radius:999px;cursor:pointer;font-size:14px;font-weight:600;color:#46505f;}
+  .tabs button.active{background:var(--red);color:#fff;border-color:var(--red);}
+  .wrap{max-width:620px;margin:0 auto 50px;padding:0 16px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;box-shadow:0 6px 24px rgba(80,40,20,.07);}
+  .panel{display:none;}.panel.active{display:block;}
+  .hint{text-align:center;color:#9aa3b2;font-size:12px;margin:10px 0 0;}
+  .row{display:flex;gap:10px;margin-top:18px;}
+  .row button{flex:1;}
+  button.act{border:none;background:var(--red);color:#fff;padding:13px;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;}
+  button.act:hover{filter:brightness(1.07);}
+  button.ghost{background:#fff;color:var(--red);border:1px solid var(--red);}
+  button.link{border:none;background:none;color:#8a93a3;font-size:12px;text-decoration:underline;cursor:pointer;padding:4px;}
+  .newword{display:block;width:100%;margin-top:14px;background:#fff7ed;color:#b45309;border:1px dashed #f0b66b;padding:11px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;}
+  .q{font-size:14px;color:#8a93a3;text-transform:uppercase;letter-spacing:.5px;}
+  .prompt{font-size:24px;font-weight:700;margin:6px 0 18px;line-height:1.3;}
+  .prompt .han{font-size:34px;}
+  .theme{font-size:12px;color:#aab2c0;margin-bottom:4px;}
+  .tonebtns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  .tonebtns button{font-size:15px;padding:14px 6px;border-radius:14px;border:2px solid var(--line);background:#fff;cursor:pointer;font-weight:700;line-height:1.25;color:var(--ink);}
+  .tonebtns button small{display:block;font-weight:500;font-size:11px;color:#8a93a3;margin-top:3px;}
+  .tonebtns button:hover{border-color:var(--red);}
+  .feedback{margin-top:16px;text-align:center;font-weight:600;min-height:22px;}
+  .explain{margin-top:16px;text-align:left;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-weight:400;}
+  .explain .ew{font-size:26px;font-weight:700;}
+  .explain .ew .jp2{font-size:17px;color:var(--jp);font-weight:700;margin-left:6px;}
+  .explain .ep{color:#7b8492;font-size:14px;margin:4px 0 10px;}
+  .explain .ex{font-size:15px;line-height:1.5;border-top:1px dashed var(--line);padding-top:10px;}
+  .explain .ex i{color:var(--jp);font-style:normal;font-weight:600;}
+  .clf{color:var(--clf);font-weight:700;}
+  .pron{margin-top:12px;line-height:1.7;text-align:center;}
+  .pron .pw{font-weight:700;font-size:24px;}
+  .jp{color:var(--jp);font-weight:700;letter-spacing:.3px;}
+  .pron .phint{color:#8a93a3;font-size:13px;}
+  .num-display{font-size:46px;font-weight:800;text-align:center;color:var(--red);margin:6px 0 16px;}
+  input.txt{width:100%;padding:13px;border:1px solid var(--line);border-radius:12px;font-size:18px;text-align:center;}
+  .tip{background:var(--soft);border-radius:10px;padding:12px 14px;font-size:13px;color:#46505f;margin-bottom:16px;line-height:1.6;}
+  .done{text-align:center;padding:14px;}.done .big{font-size:40px;}
+  footer{text-align:center;color:#9aa3b2;font-size:12px;padding:0 16px 30px;}
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="b">我嘅</span>廣東話<span class="r">練習</span></h1>
+  <p>Speak first! Type the Jyutping (with tone numbers). Tap "explain it" for the meaning + example.</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><b id="sStreak">0</b><span>Day streak</span></div>
+  <div class="stat"><b id="sCorrect">0</b><span>Correct</span></div>
+  <div class="stat"><b id="sMaster">0</b><span>Mastered</span></div>
+  <div class="stat"><b id="sDue">0</b><span>Due today</span></div>
+</div>
+
+<div class="bar">
+  <button class="act" style="background:var(--gold);max-width:300px;padding:9px 18px;" onclick="exportProgress()">&#8595; Export my progress for the tutor</button>
+  <button class="link" onclick="reviewAllNow()">Review everything again now</button>
+</div>
+<p class="hint">Export &#8594; Copy &#8594; paste it to your tutor in chat (or Download), then say "sync my practice"</p>
+
+<div class="tabs">
+  <button data-p="quiz" class="active">Quiz</button>
+  <button data-p="tone">Tones</button>
+  <button data-p="sent">Sentences</button>
+  <button data-p="num">Numbers</button>
+  <button data-p="clf">Classifiers</button>
+</div>
+
+<div class="wrap">
+  <div class="panel active" id="quiz">
+    <div class="card" id="quizCard">
+      <div class="theme" id="qTheme"></div>
+      <div class="q">Say it in Cantonese (type the Jyutping):</div>
+      <div class="prompt" id="qPrompt">&mdash;</div>
+      <input class="txt" id="qIn" placeholder="e.g. nei5 hou2" autocomplete="off">
+      <button class="newword" id="qNew" onclick="explainQuiz()">&#129300; I don't know this word &mdash; show the answer</button>
+      <div class="feedback" id="qFb"></div>
+      <div class="row">
+        <button class="act" id="qCheck" onclick="checkQuiz()">Check</button>
+        <button class="act ghost" id="qSkip" onclick="newQuiz()">Skip</button>
+      </div>
+      <div class="row"><button class="act" id="qNext" onclick="newQuiz()" style="display:none">Next &#8594;</button></div>
+      <p class="hint">Tone numbers 1&ndash;6 matter (買 maai5 vs 賣 maai6). Spaces optional. No tones typed? It still counts &mdash; but watch the reminder.</p>
+    </div>
+  </div>
+
+  <div class="panel" id="tone">
+    <div class="card" id="toneCard">
+      <div class="tip">The 6 tones on "si": <b>si1</b> 詩 high-flat &middot; <b>si2</b> 史 rising &middot; <b>si3</b> 試 mid-flat &middot; <b>si4</b> 時 low-falling &middot; <b>si5</b> 市 low-rising &middot; <b>si6</b> 事 low-flat.</div>
+      <div class="theme" id="tTheme"></div>
+      <div class="q">What tone is this syllable?</div>
+      <div class="prompt" id="tPrompt">&mdash;</div>
+      <div class="tonebtns">
+        <button onclick="answerTone(1)">1<small>high flat</small></button>
+        <button onclick="answerTone(2)">2<small>rising</small></button>
+        <button onclick="answerTone(3)">3<small>mid flat</small></button>
+        <button onclick="answerTone(4)">4<small>low falling</small></button>
+        <button onclick="answerTone(5)">5<small>low rising</small></button>
+        <button onclick="answerTone(6)">6<small>low flat</small></button>
+      </div>
+      <button class="newword" id="tNew" onclick="explainTone()">&#129300; Not sure &mdash; show the tone</button>
+      <div class="feedback" id="tFb"></div>
+      <div class="row"><button class="act" id="tNext" onclick="newTone()" style="display:none">Next &#8594;</button></div>
+    </div>
+  </div>
+
+  <div class="panel" id="sent">
+    <div class="card" id="sentCard">
+      <div class="q">Say it in Cantonese (type the Jyutping):</div>
+      <div class="prompt" id="sPrompt">&mdash;</div>
+      <input class="txt" id="sIn" placeholder="type the Cantonese..." autocomplete="off">
+      <button class="newword" id="sNew" onclick="explainSent()">&#129300; I don't know this &mdash; show the answer</button>
+      <div class="feedback" id="sFb"></div>
+      <div class="row">
+        <button class="act" id="sCheck" onclick="checkSent()">Check</button>
+        <button class="act ghost" id="sSkip" onclick="newSent(true)">Skip</button>
+      </div>
+      <div class="row"><button class="act" id="sNext" onclick="newSent()" style="display:none">Next &#8594;</button></div>
+      <p class="hint">Spaces and final particles (呀/啦) are optional &mdash; say it out loud, then press Next.</p>
+    </div>
+  </div>
+
+  <div class="panel" id="num">
+    <div class="card">
+      <div class="q">Say this number in Cantonese (Jyutping):</div>
+      <div class="num-display" id="numVal">0</div>
+      <input class="txt" id="numIn" placeholder="e.g. ji6 sap6 saam1" autocomplete="off">
+      <div class="feedback" id="numFb"></div>
+      <div class="row">
+        <button class="act" onclick="checkNum()">Check</button>
+        <button class="act ghost" onclick="newNum()">New number</button>
+      </div>
+      <p class="hint">10=sap6, 20=ji6 sap6, 21=ji6 sap6 jat1, 100=jat1 baak3, 105=jat1 baak3 ling4 ng5, 110=jat1 baak3 jat1 sap6, 1000=jat1 cin1. (兩百 loeng5 baak3 also accepted for 200.)</p>
+    </div>
+  </div>
+
+  <div class="panel" id="clf">
+    <div class="card" id="clfCard">
+      <div class="tip" id="clfTip"></div>
+      <div class="q">Which classifier (measure word)?</div>
+      <div class="prompt" id="clfPrompt">&mdash;</div>
+      <input class="txt" id="clfIn" placeholder="e.g. bui1" autocomplete="off">
+      <button class="newword" id="clfNew" onclick="explainClf()">&#129300; Not sure &mdash; show the classifier</button>
+      <div class="feedback" id="clfFb"></div>
+      <div class="row">
+        <button class="act" id="clfCheck" onclick="checkClf()">Check</button>
+        <button class="act ghost" id="clfSkip" onclick="newClf()">Skip</button>
+      </div>
+      <div class="row"><button class="act" id="clfNext" onclick="newClf()" style="display:none">Next &#8594;</button></div>
+    </div>
+  </div>
+</div>
+
+<footer>Progress saved on this device. Mastered items return for review on a spaced schedule. 加油! gaa1 jau2!</footer>
+
+<script>
+/* === VOCAB_START : tutor regenerates on "sync my practice". Row = ["English","jyutping","pronHint","Theme","classifier(jyutping or empty)","characters","example jyutping","example EN"] === */
+const VOCAB=[
+  ["hello","nei5 hou2","nay HO","Greetings","","你好","nei5 hou2!","Hello!"],
+  ["good morning","zou2 san4","JO sun","Greetings","","早晨","zou2 san4!","Good morning!"],
+  ["goodbye","baai1 baai3","bye-bye","Greetings","","拜拜","baai1 baai3!","Bye-bye!"],
+  ["thank you (for help)","m4 goi1","mm-GOY","Greetings","","唔該","m4 goi1 saai3.","Thank you (for your help)."],
+  ["thank you (for a gift)","do1 ze6","daw-JE","Greetings","","多謝","do1 ze6 nei5.","Thank you (for the gift)."],
+  ["sorry","deoi3 m4 zyu6","deuy-mm-JYU","Greetings","","對唔住","deoi3 m4 zyu6.","I'm sorry."],
+  ["excuse me / please","m4 goi1","mm-GOY","Greetings","","唔該","m4 goi1.","Excuse me / please."],
+  ["you're welcome","m4 sai2","mm-SY","Greetings","","唔使","m4 sai2 haak3 hei3.","You're welcome."],
+  ["yes / to be","hai6","high","Yes-No","","係","ngo5 hai6 Iris.","I am Iris."],
+  ["no / is not","m4 hai6","mm-high","Yes-No","","唔係","ngo5 m4 hai6 hok6 saang1.","I'm not a student."],
+  ["good / OK","hou2","ho","Yes-No","","好","hou2 aa3!","Good! / OK!"],
+  ["not good","m4 hou2","mm-ho","Yes-No","","唔好","ni1 di1 m4 hou2.","These aren't good."],
+  ["to have","jau5","yau","Yes-No","","有","ngo5 jau5 cin2.","I have money."],
+  ["not have / none","mou5","mo","Yes-No","","冇","ngo5 mou5 cin2.","I have no money."],
+  ["I / me","ngo5","ngaw","Pronouns","","我","ngo5 hai6 Iris.","I am Iris."],
+  ["you","nei5","nay","Pronouns","","你","nei5 hou2 maa3?","How are you?"],
+  ["he / she / it","keoi5","kuoy","Pronouns","","佢","keoi5 hai6 ngo5 pang4 jau5.","He is my friend."],
+  ["we / us","ngo5 dei6","ngaw-day","Pronouns","","我哋","ngo5 dei6 heoi3 sik6 faan6.","We're going to eat."],
+  ["you (plural)","nei5 dei6","nay-day","Pronouns","","你哋","nei5 dei6 hou2 maa3?","How are you all?"],
+  ["they / them","keoi5 dei6","kuoy-day","Pronouns","","佢哋","keoi5 dei6 hai6 hok6 saang1.","They are students."],
+  ["'s (possessive)","ge3","geh","Pronouns","","嘅","ngo5 ge3 syu1.","my book"],
+  ["what","mat1 je5","mat-YE","Questions","","乜嘢","nei5 sik6 mat1 je5?","What are you eating?"],
+  ["who","bin1 go3","bin-GAW","Questions","","邊個","keoi5 hai6 bin1 go3?","Who is he?"],
+  ["where","bin1 dou6","bin-DOH","Questions","","邊度","nei5 heoi3 bin1 dou6?","Where are you going?"],
+  ["when","gei2 si4","GAY-see","Questions","","幾時","nei5 gei2 si4 lai4?","When are you coming?"],
+  ["why","dim2 gaai2","DIM-gai","Questions","","點解","dim2 gaai2 aa3?","Why?"],
+  ["how / how's","dim2","dim","Questions","","點","nei5 dim2 aa3?","How are you?"],
+  ["how much / many","gei2 do1","GAY-daw","Questions","","幾多","gei2 do1 cin2?","How much money?"],
+  ["to eat","sik6","sek","Verbs","","食","ngo5 soeng2 sik6 faan6.","I want to eat."],
+  ["to drink","jam2","yam","Verbs","","飲","jam2 caa4.","Drink tea."],
+  ["to go","heoi3","huoy","Verbs","","去","ngo5 heoi3 hok6 haau6.","I go to school."],
+  ["to come","lai4","lai","Verbs","","嚟","keoi5 lai4 ngo5 uk1 kei2.","He comes to my home."],
+  ["to want (to)","soeng2","seung","Verbs","","想","ngo5 soeng2 heoi3.","I want to go."],
+  ["to want / need","jiu3","yiu","Verbs","","要","ngo5 jiu3 jat1 bui1 seoi2.","I need a glass of water."],
+  ["to look / watch","tai2","tye","Verbs","","睇","ngo5 tai2 din6 si6.","I watch TV."],
+  ["to speak / say","gong2","gong","Verbs","","講","nei5 sik1 gong2 gwong2 dung1 waa2 maa3?","Can you speak Cantonese?"],
+  ["to know how / can","sik1","sik","Verbs","","識","ngo5 sik1 gong2 di1 di1.","I can speak a little."],
+  ["to use","jung6","yung","Verbs","","用","ngo5 jung6 din6 waa2.","I use the phone."],
+  ["to like","zung1 ji3","jung-YEE","Verbs","","鍾意","ngo5 zung1 ji3 dim2 sam1.","I like dim sum."],
+  ["to take (transport)","daap3","daap","Verbs","","搭","daap3 dei6 tit3.","take the MTR."],
+  ["to go / return (to work, home)","faan1","faan","Verbs","","返","faan1 gung1.","go to work."],
+  ["to buy","maai5","my (rising)","Verbs","","買","ngo5 maai5 saang1 gwo2.","I buy fruit."],
+  ["to sell","maai6","my (low)","Verbs","","賣","keoi5 maai6 caa4.","He sells tea."],
+  ["cooked rice / a meal","faan6","faahn","Food","wun2","飯","sik6 faan6.","eat (a meal)."],
+  ["noodles","min6","meen","Food","wun2","麵","jat1 wun2 min6.","a bowl of noodles."],
+  ["congee","zuk1","jook","Food","wun2","粥","ngo5 sik6 zuk1.","I eat congee."],
+  ["tea","caa4","chah","Food","bui1","茶","jat1 bui1 caa4.","a cup of tea."],
+  ["coffee","gaa3 fe1","ga-FE","Food","bui1","咖啡","jat1 bui1 gaa3 fe1.","a cup of coffee."],
+  ["water","seoi2","suoy","Food","bui1","水","jat1 bui1 seoi2.","a glass of water."],
+  ["dim sum","dim2 sam1","DIM-sum","Food","","點心","ngo5 zung1 ji3 dim2 sam1.","I like dim sum."],
+  ["chicken","gai1","gai","Food","","雞","ngo5 sik6 gai1.","I eat chicken."],
+  ["fish","jyu2","yu","Food","tiu4","魚","jat1 tiu4 jyu2.","a fish."],
+  ["beef","ngau4 juk6","ngau-yook","Food","","牛肉","ngo5 m4 sik6 ngau4 juk6.","I don't eat beef."],
+  ["vegetables","coi3","choy","Food","","菜","sik6 do1 di1 coi3.","eat more vegetables."],
+  ["egg","daan2","daan","Food","zek3","蛋","jat1 zek3 daan2.","an egg."],
+  ["soup","tong1","tong","Food","wun2","湯","jat1 wun2 tong1.","a bowl of soup."],
+  ["fruit","saang1 gwo2","saang-GWAW","Food","","生果","maai5 saang1 gwo2.","buy fruit."],
+  ["the bill","maai4 daan1","my-DAAN","Food","","埋單","m4 goi1, maai4 daan1!","Bill, please!"],
+  ["hot (temperature)","jit6","yeet","Food","","熱","ngo5 soeng2 jit6 ge3.","I'd like it hot."],
+  ["cold / iced","dung3","dung","Food","","凍","jat1 bui1 dung3 caa4.","an iced tea."],
+  ["dad","baa4 baa1","BA-ba","Family","","爸爸","ngo5 baa4 baa1.","my dad"],
+  ["mum","maa4 maa1","MA-ma","Family","","媽媽","ngo5 maa4 maa1.","my mum"],
+  ["older brother","go4 go1","GAW-gaw","Family","","哥哥","ngo5 go4 go1.","my older brother"],
+  ["younger brother","sai3 lou2","sai-LO","Family","","細佬","ngo5 sai3 lou2.","my younger brother"],
+  ["older sister","ze4 ze1","JE-je","Family","","姐姐","ngo5 ze4 ze1.","my older sister"],
+  ["younger sister","mui4 mui2","MUI-mui","Family","","妹妹","ngo5 mui4 mui2.","my younger sister"],
+  ["husband","lou5 gung1","lo-GUNG","Family","","老公","keoi5 lou5 gung1.","her husband"],
+  ["wife","lou5 po4","lo-PAW","Family","","老婆","keoi5 lou5 po4.","his wife"],
+  ["friend","pang4 jau5","pang-YAU","Family","go3","朋友","jat1 go3 pang4 jau5.","a friend"],
+  ["child / kid","siu2 pang4 jau5","siu-pang-YAU","Family","go3","小朋友","jat1 go3 siu2 pang4 jau5.","a child"],
+  ["book","syu1","syu","Things","bun2","書","jat1 bun2 syu1.","a book"],
+  ["table","toi2","toy","Things","zoeng1","枱","jat1 zoeng1 toi2.","a table"],
+  ["chair","dang3","dang","Things","zoeng1","櫈","jat1 zoeng1 dang3.","a chair"],
+  ["clothes / a top","saam1","saam","Things","gin6","衫","jat1 gin6 saam1.","a piece of clothing"],
+  ["phone","din6 waa2","deen-WA","Things","go3","電話","ngo5 ge3 din6 waa2.","my phone"],
+  ["person","jan4","yan","People","go3","人","jat1 go3 jan4.","one person"],
+  ["dog","gau2","gau","Animals","zek3","狗","jat1 zek3 gau2.","a dog"],
+  ["cat","maau1","maau","Animals","zek3","貓","jat1 zek3 maau1.","a cat"],
+  ["car","ce1","che","Transport","gaa3","車","jat1 gaa3 ce1.","a car"],
+  ["bus","baa1 si2","BA-see","Transport","gaa3","巴士","daap3 baa1 si2.","take the bus"],
+  ["taxi","dik1 si2","DIK-see","Transport","gaa3","的士","daap3 dik1 si2.","take a taxi"],
+  ["MTR / subway","dei6 tit3","day-TEET","Transport","","地鐵","daap3 dei6 tit3.","take the MTR"],
+  ["money","cin2","cheen","Money","","錢","ngo5 mou5 cin2.","I have no money."],
+  ["dollar(s)","man1","mun","Money","","蚊","sap6 man1.","ten dollars"],
+  ["expensive","gwai3","gwai","Money","","貴","taai3 gwai3 laa3.","Too expensive."],
+  ["cheap","peng4","peng","Money","","平","hou2 peng4.","Very cheap."],
+  ["shop","pou3 tau2","po-TAU","Money","gaan1","舖頭","jat1 gaan1 pou3 tau2.","a shop"],
+  ["market","gaai1 si5","gai-SEE","Money","","街市","heoi3 gaai1 si5.","go to the market"],
+  ["big","daai6","daai","Adjectives","","大","hou2 daai6.","Very big."],
+  ["small","sai3","sai","Adjectives","","細","hou2 sai3.","Very small."],
+  ["many / much","do1","daw","Adjectives","","多","hou2 do1 jan4.","Lots of people."],
+  ["few / little","siu2","siu","Adjectives","","少","hou2 siu2.","Very few."],
+  ["delicious (food)","hou2 sik6","ho-SEK","Adjectives","","好食","ni1 di1 hou2 sik6!","This is delicious!"],
+  ["tasty (drink)","hou2 jam2","ho-YAM","Adjectives","","好飲","bui1 caa4 hou2 jam2.","The tea is tasty."],
+  ["pretty / nice","leng3","leng","Adjectives","","靚","hou2 leng3!","Very pretty!"],
+  ["tired","gui6","gui","Adjectives","","攰","ngo5 hou2 gui6.","I'm very tired."],
+  ["happy","hoi1 sam1","hoy-SUM","Adjectives","","開心","ngo5 hou2 hoi1 sam1.","I'm very happy."],
+  ["correct / right","ngaam1","ngaam","Adjectives","","啱","ngaam1 aa3!","Correct!"],
+  ["today","gam1 jat6","gum-YAT","Time","","今日","gam1 jat6 hou2 jit6.","Today is hot."],
+  ["tomorrow","ting1 jat6","ting-YAT","Time","","聽日","ting1 jat6 gin3.","See you tomorrow."],
+  ["yesterday","kam4 jat6","kum-YAT","Time","","琴日","kam4 jat6 ngo5 mou5 lai4.","I didn't come yesterday."],
+  ["now","ji4 gaa1","yee-GA","Time","","而家","ji4 gaa1 gei2 dim2?","What time is it now?"],
+  ["morning","ziu1 zou2","jiu-JO","Time","","朝早","ziu1 zou2 jam2 caa4.","morning tea"],
+  ["night / evening","je6 maan5","ye-MAAN","Time","","夜晚","je6 maan5 gin3.","See you tonight."],
+  ["o'clock","dim2","dim","Time","","點","saam1 dim2.","three o'clock"],
+  ["Monday","sing1 kei4 jat1","sing-kay-YAT","Time","","星期一","sing1 kei4 jat1 faan1 gung1.","Work on Monday."],
+  ["home","uk1 kei2","uk-KAY","Places","","屋企","ngo5 faan1 uk1 kei2.","I go home."],
+  ["school","hok6 haau6","hok-HAAU","Places","gaan1","學校","jat1 gaan1 hok6 haau6.","a school"],
+  ["company / office","gung1 si1","gung-SEE","Places","gaan1","公司","ngo5 faan1 gung1 si1.","I go to the office."],
+  ["toilet","ci3 so2","chee-SAW","Places","","廁所","ci3 so2 hai2 bin1 dou6?","Where's the toilet?"],
+  ["here","ni1 dou6","nee-DOH","Places","","呢度","hai2 ni1 dou6.","over here"],
+  ["there","go2 dou6","gaw-DOH","Places","","嗰度","hai2 go2 dou6.","over there"],
+  ["one","jat1","yat","Numbers","","一","jat1 go3.","one (of something)"],
+  ["two (for counting things)","loeng5","leung","Numbers","","兩","loeng5 go3 jan4.","two people"],
+  ["two (the number)","ji6","yee","Numbers","","二","ji6 sap6.","twenty"],
+  ["three","saam1","saam","Numbers","","三","saam1 dim2.","three o'clock"],
+  ["four","sei3","say","Numbers","","四","sei3 go3.","four (of them)"],
+  ["five","ng5","ng","Numbers","","五","ng5 man1.","five dollars"],
+  ["six","luk6","look","Numbers","","六","luk6 dim2.","six o'clock"],
+  ["seven","cat1","chat","Numbers","","七","cat1 go3.","seven"],
+  ["eight","baat3","baat","Numbers","","八","baat3 man1.","eight dollars"],
+  ["nine","gau2","gau","Numbers","","九","gau2 dim2.","nine o'clock"],
+  ["ten","sap6","sup","Numbers","","十","sap6 man1.","ten dollars"]
+];
+/* === VOCAB_END === */
+
+/* classifier reference (measure words) */
+const CLF={
+  "go3":["個","general; people & abstract things"],
+  "bun2":["本","books"],
+  "zoeng1":["張","flat things: table, paper, ticket, bed"],
+  "bui1":["杯","cups/glasses of drink"],
+  "wun2":["碗","bowls: rice, soup, noodles"],
+  "zek3":["隻","animals, one of a pair"],
+  "gaa3":["架","vehicles & machines"],
+  "tiu4":["條","long things: street, fish, trousers"],
+  "gin6":["件","clothes & items/matters"],
+  "gaan1":["間","rooms, shops, buildings"]
+};
+
+/* === SENTENCES_START : English prompt + accepted Jyutping answers (spacing & tones flexible per app rules). Tutor extends on "sync my practice" === */
+const SENTENCES=[
+  ["Hello!",["nei5 hou2"]],
+  ["Good morning!",["zou2 san4"]],
+  ["Thank you (for your help).",["m4 goi1","m4 goi1 saai3"]],
+  ["Thank you (for the gift).",["do1 ze6","do1 ze6 saai3"]],
+  ["Sorry.",["deoi3 m4 zyu6"]],
+  ["I am Iris.",["ngo5 hai6 iris"]],
+  ["He is my friend.",["keoi5 hai6 ngo5 pang4 jau5","keoi5 hai6 ngo5 ge3 pang4 jau5"]],
+  ["I have money.",["ngo5 jau5 cin2"]],
+  ["I have no money.",["ngo5 mou5 cin2"]],
+  ["I want to eat.",["ngo5 soeng2 sik6 faan6","ngo5 soeng2 sik6 je5"]],
+  ["I want a cup of coffee.",["ngo5 soeng2 jiu3 jat1 bui1 gaa3 fe1","ngo5 soeng2 jat1 bui1 gaa3 fe1"]],
+  ["A cup of tea, please.",["m4 goi1 jat1 bui1 caa4"]],
+  ["The bill, please.",["m4 goi1 maai4 daan1","maai4 daan1"]],
+  ["How much is it?",["gei2 do1 cin2","gei2 do1 cin2 aa3"]],
+  ["Too expensive!",["taai3 gwai3 laa3","taai3 gwai3"]],
+  ["I don't eat beef.",["ngo5 m4 sik6 ngau4 juk6"]],
+  ["I like dim sum.",["ngo5 zung1 ji3 dim2 sam1"]],
+  ["Where are you going?",["nei5 heoi3 bin1 dou6","nei5 heoi3 bin1 dou6 aa3"]],
+  ["I'm going home.",["ngo5 faan1 uk1 kei2","ngo5 heoi3 uk1 kei2"]],
+  ["Where is the toilet?",["ci3 so2 hai2 bin1 dou6","ci3 so2 hai2 bin1 dou6 aa3"]],
+  ["What are you eating?",["nei5 sik6 mat1 je5","nei5 sik6 gan2 mat1 je5"]],
+  ["Can you speak Cantonese?",["nei5 sik1 m4 sik1 gong2 gwong2 dung1 waa2","nei5 sik1 gong2 gwong2 dung1 waa2 maa3"]],
+  ["I can speak a little.",["ngo5 sik1 gong2 di1 di1","sik1 gong2 di1 di1"]],
+  ["How are you?",["nei5 hou2 maa3","nei5 dim2 aa3"]],
+  ["I'm very tired.",["ngo5 hou2 gui6"]],
+  ["I'm very happy.",["ngo5 hou2 hoi1 sam1"]],
+  ["This is delicious!",["ni1 di1 hou2 sik6","hou2 sik6"]],
+  ["What time is it now?",["ji4 gaa1 gei2 dim2","ji4 gaa1 gei2 dim2 aa3"]],
+  ["See you tomorrow.",["ting1 jat6 gin3"]],
+  ["Take the bus.",["daap3 baa1 si2"]],
+  ["I want to drink tea.",["ngo5 soeng2 jam2 caa4"]],
+  ["Two cups of coffee.",["loeng5 bui1 gaa3 fe1"]],
+  ["I have two friends.",["ngo5 jau5 loeng5 go3 pang4 jau5"]],
+  ["He is not a student.",["keoi5 m4 hai6 hok6 saang1"]]
+];
+/* === SENTENCES_END === */
+
+/* Cantonese number generator 0-1000 (Jyutping) */
+const DIGIT=["ling4","jat1","ji6","saam1","sei3","ng5","luk6","cat1","baat3","gau2"];
+function ctxTens(n){ const t=Math.floor(n/10), o=n%10; return DIGIT[t]+" sap6"+(o?(" "+DIGIT[o]):""); }
+function numToYue(n){
+  if(n===0) return "ling4";
+  if(n<10) return DIGIT[n];
+  if(n<20) return "sap6"+(n%10?(" "+DIGIT[n%10]):"");
+  if(n<100) return ctxTens(n);
+  if(n<1000){
+    const h=Math.floor(n/100), rem=n%100;
+    let s=DIGIT[h]+" baak3";
+    if(rem===0) return s;
+    if(rem<10) return s+" ling4 "+DIGIT[rem];
+    return s+" "+ctxTens(rem);
+  }
+  return "jat1 cin1";
+}
+
+const LS=window.localStorage;
+const MASTER_AT=2;
+const INTERVALS=[3,7,14,30];
+function today(){return new Date().toISOString().slice(0,10);}
+function addDays(d,n){const x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);return x.toISOString().slice(0,10);}
+let stats={streak:+(LS.getItem('yue_streak')||0),correct:+(LS.getItem('yue_correct')||0),last:LS.getItem('yue_last')||""};
+let mastery=JSON.parse(LS.getItem('yue_mastery')||'{}');
+for(const k in mastery){ if(typeof mastery[k]==='number'){ const n=mastery[k]; mastery[k]={n:n,due:(n>=MASTER_AT?today():null)}; } }
+LS.setItem('yue_mastery',JSON.stringify(mastery));
+(function streakInit(){
+  const t=today();
+  if(stats.last!==t){ const y=new Date(Date.now()-864e5).toISOString().slice(0,10); stats.streak=(stats.last===y)?stats.streak+1:1; stats.last=t; saveStats(); }
+})();
+function saveStats(){LS.setItem('yue_streak',stats.streak);LS.setItem('yue_correct',stats.correct);LS.setItem('yue_last',stats.last);render();}
+function saveMastery(){LS.setItem('yue_mastery',JSON.stringify(mastery));render();}
+function isActive(key){const m=mastery[key];if(!m)return true;if(m.n<MASTER_AT)return true;if(m.due&&today()>=m.due)return true;return false;}
+function masteredCount(){return Object.values(mastery).filter(m=>m&&m.n>=MASTER_AT).length;}
+const ONESYL=()=>VOCAB.filter(v=>!v[1].includes(" "));
+const CLFNOUNS=()=>VOCAB.filter(v=>v[4]!=="");
+function dueCount(){
+  let c=0;
+  VOCAB.forEach(v=>{if(isActive("q_"+v[1]))c++;});
+  ONESYL().forEach(v=>{if(isActive("t_"+v[1]))c++;});
+  CLFNOUNS().forEach(v=>{if(isActive("c_"+v[1]))c++;});
+  SENTENCES.forEach(s=>{if(isActive(s[0]))c++;});
+  return c;
+}
+function render(){sStreak.textContent=stats.streak;sCorrect.textContent=stats.correct;sMaster.textContent=masteredCount();sDue.textContent=dueCount();}
+function bump(key,ok){
+  let m=mastery[key]||{n:0,due:null};
+  if(ok){ m.n++; if(m.n>=MASTER_AT){ const r=m.n-MASTER_AT; m.due=addDays(today(),INTERVALS[Math.min(r,INTERVALS.length-1)]); } stats.correct++; }
+  else { m.n=0; m.due=null; }
+  mastery[key]=m; saveMastery(); saveStats();
+}
+function reviewAllNow(){ for(const k in mastery){ if(mastery[k]) mastery[k].due=today(); } saveMastery(); newQuiz(); newTone(); newSent(); newClf(); alert("Everything is open for review again. 加油!"); }
+function recordMiss(t){const m=JSON.parse(LS.getItem('yue_missed')||'{}');m[t]=(m[t]||0)+1;LS.setItem('yue_missed',JSON.stringify(m));}
+function recordNew(t){const m=JSON.parse(LS.getItem('yue_new')||'{}');m[t]=true;LS.setItem('yue_new',JSON.stringify(m));}
+/* keep tone digits for the full check; strip everything but letters+digits */
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,"");
+/* toneless: letters only */
+const bare=s=>s.toLowerCase().replace(/[^a-z]/g,"");
+const nospace=s=>(s||"").replace(/\s+/g,"").trim();
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+function clfLabel(c){ return c?(c+" "+(CLF[c]?CLF[c][0]:"")):""; }
+function pronHTML(v){
+  const clf=v[4]?' &middot; classifier <span class="clf">'+clfLabel(v[4])+'</span>':'';
+  return '<div class="pron"><span class="pw">'+v[5]+'</span> <span class="jp">'+v[1]+'</span> <span class="phint">"'+v[2]+'"</span>'+clf+'</div>';
+}
+function wordCard(v){
+  const clf=v[4]?' &middot; <span class="clf">'+clfLabel(v[4])+'</span>':'';
+  return '<div class="explain"><div class="ew">'+v[5]+'<span class="jp2">'+v[1]+'</span></div><div class="ep">"'+v[2]+'" &middot; '+v[0]+clf+'</div><div class="ex"><i>'+v[6]+'</i><br>'+v[7]+'</div></div>';
+}
+
+function exportProgress(){
+  const missed=JSON.parse(LS.getItem('yue_missed')||'{}');
+  const news=JSON.parse(LS.getItem('yue_new')||'{}');
+  const lines=Object.entries(missed).sort((a,b)=>b[1]-a[1]).map(([w,n])=>'- '+w+' - missed '+n+'x');
+  const nl=Object.keys(news).map(w=>'- '+w);
+  const md='# Cantonese practice log - '+today()+'\n\n- Day streak: '+stats.streak+'\n- Total correct: '+stats.correct+'\n- Items mastered: '+masteredCount()+'\n\n## Words/sentences I struggled with (add to my review queue)\n'+(lines.length?lines.join('\n'):'- none this round')+'\n\n## New words I flagged (please reinforce)\n'+(nl.length?nl.join('\n'):'- none')+'\n';
+  showExport(md);
+}
+function clearExportData(){ LS.removeItem('yue_missed'); LS.removeItem('yue_new'); }
+function showExport(md){
+  const old=document.getElementById('exportOverlay'); if(old) old.remove();
+  const ov=document.createElement('div'); ov.id='exportOverlay';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(50,20,20,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px;';
+  const box=document.createElement('div');
+  box.style.cssText='background:#fff;border-radius:16px;max-width:560px;width:100%;padding:18px;box-shadow:0 12px 44px rgba(0,0,0,.35);';
+  box.innerHTML='<h3 style="margin:0 0 6px;color:var(--red);">Your practice log</h3><p style="margin:0 0 10px;font-size:13px;color:#5a6473;">Easiest on phone: tap <b>Copy</b>, then paste it to your tutor in chat. (Or <b>Download</b> the file.)</p>';
+  const ta=document.createElement('textarea'); ta.readOnly=true; ta.value=md;
+  ta.style.cssText='width:100%;height:170px;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:monospace;font-size:12px;color:var(--ink);';
+  box.appendChild(ta);
+  const row=document.createElement('div'); row.style.cssText='display:flex;gap:10px;margin-top:12px;';
+  function mkBtn(label,ghost,fn){ const b=document.createElement('button'); b.textContent=label; b.className='act'+(ghost?' ghost':''); b.style.flex='1'; b.onclick=fn; return b; }
+  const copyBtn=mkBtn('Copy',false,async()=>{ try{ await navigator.clipboard.writeText(md); }catch(e){ ta.focus(); ta.select(); try{document.execCommand('copy');}catch(_){} } copyBtn.textContent='Copied! ✓'; clearExportData(); });
+  const dlBtn=mkBtn('Download',true,()=>{ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([md],{type:'text/markdown'})); a.download='practice-log.md'; document.body.appendChild(a); a.click(); a.remove(); clearExportData(); });
+  const closeBtn=mkBtn('Close',true,()=>ov.remove());
+  row.appendChild(copyBtn); row.appendChild(dlBtn); row.appendChild(closeBtn);
+  box.appendChild(row); ov.appendChild(box); document.body.appendChild(ov);
+}
+
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById(b.dataset.p).classList.add('active');
+});
+function doneMsg(el,what){el.innerHTML='<div class="done"><div class="big">&#127881;</div><p><b>All '+what+' reviewed for now!</b><br>They return on a spaced schedule. Want more now?</p><button class="act" onclick="reviewAllNow()">Review everything again</button></div>';}
+
+/* QUIZ */
+let qItem;
+function newQuiz(){
+  if(!document.getElementById('qIn'))return;
+  qFb.innerHTML="";qIn.value="";qIn.disabled=false;
+  qNew.style.display="block";qCheck.style.display="";qSkip.style.display="";qNext.style.display="none";
+  const pool=VOCAB.filter(v=>isActive("q_"+v[1]));
+  if(!pool.length){doneMsg(quizCard,'words');qItem=null;return;}
+  qItem=pick(pool);qTheme.textContent=qItem[3];qPrompt.textContent=qItem[0];
+  qIn.focus();
+}
+function endQuiz(){qIn.disabled=true;qNew.style.display="none";qCheck.style.display="none";qSkip.style.display="none";qNext.style.display="block";}
+function checkQuiz(){
+  if(!qItem||qIn.disabled)return;
+  const val=qIn.value, jp=qItem[1];
+  const exact = norm(val)===norm(jp);
+  const charOk = qItem[5]!=="" && nospace(val)===nospace(qItem[5]);
+  const toneless = !/[0-9]/.test(val) && bare(val)!=="" && bare(val)===bare(jp);
+  if(exact||charOk){ qFb.style.color="var(--good)"; qFb.innerHTML='啱! Correct!'+pronHTML(qItem); bump("q_"+qItem[1],true); }
+  else if(toneless){ qFb.style.color="var(--gold)"; qFb.innerHTML='Right word &mdash; mind the tones: <span class="jp">'+jp+'</span>'+pronHTML(qItem); bump("q_"+qItem[1],true); }
+  else { qFb.style.color="var(--bad)"; qFb.innerHTML='Answer: <span class="jp">'+jp+'</span>'+pronHTML(qItem); recordMiss(qItem[0]+" = "+jp); bump("q_"+qItem[1],false); }
+  endQuiz();
+}
+function explainQuiz(){
+  if(!qItem)return;
+  qFb.style.color="var(--ink)";qFb.innerHTML=wordCard(qItem);
+  recordNew(qItem[0]+" = "+qItem[1]);
+  mastery["q_"+qItem[1]]={n:0,due:null};saveMastery();
+  endQuiz();
+}
+
+/* TONES */
+let tItem,tAns;
+function newTone(){
+  if(!document.getElementById('tPrompt'))return;
+  tFb.innerHTML="";tNext.style.display="none";tNew.style.display="block";
+  const pool=ONESYL().filter(v=>isActive("t_"+v[1]));
+  if(!pool.length){doneMsg(toneCard,'tones');tItem=null;return;}
+  let next=pick(pool); if(pool.length>1){let z=0;while(tItem&&next[1]===tItem[1]&&z++<20)next=pick(pool);}
+  tItem=next; tAns=+tItem[1].slice(-1);
+  const masked=tItem[1].slice(0,-1)+"?";
+  tTheme.textContent=tItem[3];
+  tPrompt.innerHTML='<span class="han">'+tItem[5]+'</span> &nbsp;<span class="jp">'+masked+'</span><br><span style="font-size:14px;color:#8a93a3;">'+tItem[0]+'</span>';
+}
+function answerTone(choice){
+  if(!tItem)return;
+  const ok=choice===tAns;
+  if(ok){tFb.style.color="var(--good)";tFb.innerHTML='啱! It\'s tone '+tAns+' &mdash; <span class="jp">'+tItem[1]+'</span>';}
+  else{tFb.style.color="var(--bad)";tFb.innerHTML='It\'s tone '+tAns+': <span class="jp">'+tItem[1]+'</span> ("'+tItem[2]+'")';recordMiss('[tone] '+tItem[5]+' '+tItem[1]);}
+  bump("t_"+tItem[1],ok);tNew.style.display="none";tNext.style.display="block";
+}
+function explainTone(){
+  if(!tItem)return;
+  tFb.style.color="var(--ink)";tFb.innerHTML='Tone '+tAns+': <span class="jp">'+tItem[1]+'</span>'+wordCard(tItem);
+  recordNew('[tone] '+tItem[5]+' '+tItem[1]);
+  mastery["t_"+tItem[1]]={n:0,due:null};saveMastery();
+  tNew.style.display="none";tNext.style.display="block";
+}
+
+/* SENTENCES */
+let sCur;
+function newSent(skip){
+  if(!document.getElementById('sIn'))return;
+  sFb.innerHTML="";sIn.value="";sIn.disabled=false;
+  sNew.style.display="block";sCheck.style.display="";sSkip.style.display="";sNext.style.display="none";
+  const pool=SENTENCES.filter(s=>isActive(s[0]));
+  if(!pool.length){doneMsg(sentCard,'sentences');sCur=null;return;}
+  let next=pick(pool); if(pool.length>1){let z=0;while(sCur&&next[0]===sCur[0]&&z++<20)next=pick(pool);}
+  sCur=next;sPrompt.textContent=sCur[0];sIn.focus();
+}
+function endSent(){sIn.disabled=true;sNew.style.display="none";sCheck.style.display="none";sSkip.style.display="none";sNext.style.display="block";}
+function checkSent(){
+  if(!sCur||sIn.disabled)return;
+  const exact=sCur[1].some(a=>norm(a)===norm(sIn.value));
+  const toneless=!/[0-9]/.test(sIn.value)&&bare(sIn.value)!==""&&sCur[1].some(a=>bare(a)===bare(sIn.value));
+  if(exact){sFb.style.color="var(--good)";sFb.innerHTML='正! <span class="jp">'+sCur[1][0]+'</span>';}
+  else if(toneless){sFb.style.color="var(--gold)";sFb.innerHTML='Right words &mdash; mind the tones: <span class="jp">'+sCur[1][0]+'</span>';}
+  else{sFb.style.color="var(--bad)";sFb.innerHTML='Answer: <span class="jp">'+sCur[1][0]+'</span>';recordMiss('[sentence] '+sCur[0]+' = '+sCur[1][0]);}
+  bump(sCur[0],exact||toneless);
+  endSent();
+}
+function explainSent(){
+  if(!sCur)return;
+  sFb.style.color="var(--ink)";
+  sFb.innerHTML='<div class="explain"><div class="ew" style="font-size:18px;"><span class="jp">'+sCur[1][0]+'</span></div><div class="ep">'+sCur[0]+'</div></div>';
+  recordNew('[sentence] '+sCur[0]+' = '+sCur[1][0]);
+  mastery[sCur[0]]={n:0,due:null};saveMastery();
+  endSent();
+}
+
+/* NUMBERS */
+let numCur;
+function newNum(){numCur=Math.floor(Math.random()*1001);numVal.textContent=numCur;numIn.value="";numFb.textContent="";numIn.focus();}
+function numVariants(n){
+  const base=numToYue(n); const v=[base];
+  if(base.indexOf("ji6 baak3")===0) v.push(base.replace("ji6 baak3","loeng5 baak3"));
+  return v;
+}
+function checkNum(){
+  const ok=numVariants(numCur).some(a=>norm(a)===norm(numIn.value));
+  if(ok){stats.correct++;saveStats();numFb.innerHTML='正! <span class="jp">'+numToYue(numCur)+'</span>';numFb.style.color="var(--good)";}
+  else{numFb.innerHTML='Answer: <span class="jp">'+numToYue(numCur)+'</span>';numFb.style.color="var(--bad)";recordMiss(numCur+' = '+numToYue(numCur));}
+}
+
+/* CLASSIFIERS */
+let clfCur;
+function clfTipHTML(){
+  return 'Measure words: '+Object.entries(CLF).map(([k,v])=>'<b>'+k+'</b> '+v[0]).join(' &middot; ')+'.';
+}
+function newClf(){
+  if(!document.getElementById('clfIn'))return;
+  clfTip.innerHTML=clfTipHTML();
+  clfFb.innerHTML="";clfIn.value="";clfIn.disabled=false;
+  clfNew.style.display="block";clfCheck.style.display="";clfSkip.style.display="";clfNext.style.display="none";
+  const pool=CLFNOUNS().filter(v=>isActive("c_"+v[1]));
+  if(!pool.length){doneMsg(clfCard,'classifiers');clfCur=null;return;}
+  let next=pick(pool); if(pool.length>1){let z=0;while(clfCur&&next[1]===clfCur[1]&&z++<20)next=pick(pool);}
+  clfCur=next;
+  clfPrompt.innerHTML='jat1 ___ <span class="han">'+clfCur[5]+'</span><br><span style="font-size:14px;color:#8a93a3;">one ___ '+clfCur[0]+'</span>';
+  clfIn.focus();
+}
+function endClf(){clfIn.disabled=true;clfNew.style.display="none";clfCheck.style.display="none";clfSkip.style.display="none";clfNext.style.display="block";}
+function checkClf(){
+  if(!clfCur||clfIn.disabled)return;
+  const ans=clfCur[4];
+  const ok=norm(clfIn.value)===norm(ans)||bare(clfIn.value)===bare(ans)||nospace(clfIn.value)===(CLF[ans]?CLF[ans][0]:"");
+  if(ok){clfFb.style.color="var(--good)";clfFb.innerHTML='啱! jat1 <span class="clf">'+clfLabel(ans)+'</span> '+clfCur[5];}
+  else{clfFb.style.color="var(--bad)";clfFb.innerHTML='It\'s <span class="clf">'+clfLabel(ans)+'</span> &mdash; jat1 '+ans+' '+clfCur[5]+' ('+(CLF[ans]?CLF[ans][1]:"")+')';recordMiss('[classifier] '+ans+' + '+clfCur[5]+' '+clfCur[0]);}
+  bump("c_"+clfCur[1],ok);
+  endClf();
+}
+function explainClf(){
+  if(!clfCur)return;
+  const ans=clfCur[4];
+  clfFb.style.color="var(--ink)";
+  clfFb.innerHTML='<div class="explain"><div class="ew">jat1 <span class="clf">'+clfLabel(ans)+'</span> '+clfCur[5]+'</div><div class="ep">'+ans+' = '+(CLF[ans]?CLF[ans][1]:"")+'</div><div class="ex">'+clfCur[0]+' &middot; <span class="jp">'+clfCur[1]+'</span></div></div>';
+  recordNew('[classifier] '+clfCur[5]+' takes '+ans);
+  mastery["c_"+clfCur[1]]={n:0,due:null};saveMastery();
+  endClf();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const sp=document.getElementById('sent');
+  if(sp&&sp.classList.contains('active')){ if(sNext.style.display==='block') newSent(); else checkSent(); return; }
+  const cp=document.getElementById('clf');
+  if(cp&&cp.classList.contains('active')){ if(clfNext.style.display==='block') newClf(); else checkClf(); return; }
+  const qp=document.getElementById('quiz');
+  if(qp&&qp.classList.contains('active')){ if(qNext.style.display==='block') newQuiz(); else checkQuiz(); }
+});
+numIn.addEventListener('keydown',e=>{if(e.key==='Enter')checkNum();});
+
+newQuiz(); newTone(); newSent(); newNum(); newClf(); render();
+</script>
+</body>
+</html>
