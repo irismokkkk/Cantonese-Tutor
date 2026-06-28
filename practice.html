@@ -125,9 +125,9 @@
 
   <div class="panel" id="sent">
     <div class="card" id="sentCard">
-      <div class="q">Say it in Cantonese (type the Jyutping):</div>
+      <div class="q">Say it in Cantonese (Jyutping <b>or</b> characters):</div>
       <div class="prompt" id="sPrompt">&mdash;</div>
-      <input class="txt" id="sIn" placeholder="type the Cantonese..." autocomplete="off">
+      <input class="txt" id="sIn" placeholder="type Jyutping or 中文..." autocomplete="off">
       <button class="newword" id="sNew" onclick="explainSent()">&#129300; I don't know this &mdash; show the answer</button>
       <div class="feedback" id="sFb"></div>
       <div class="row">
@@ -135,21 +135,21 @@
         <button class="act ghost" id="sSkip" onclick="newSent(true)">Skip</button>
       </div>
       <div class="row"><button class="act" id="sNext" onclick="newSent()" style="display:none">Next &#8594;</button></div>
-      <p class="hint">Spaces and final particles (呀/啦) are optional &mdash; say it out loud, then press Next.</p>
+      <p class="hint">Type Jyutping <b>or</b> the Chinese characters &mdash; either counts. Spaces &amp; final particles (呀/啦) optional. Say it out loud, then press Next.</p>
     </div>
   </div>
 
   <div class="panel" id="num">
     <div class="card">
-      <div class="q">Say this number in Cantonese (Jyutping):</div>
+      <div class="q">Say this number in Cantonese (Jyutping <b>or</b> characters):</div>
       <div class="num-display" id="numVal">0</div>
-      <input class="txt" id="numIn" placeholder="e.g. ji6 sap6 saam1" autocomplete="off">
+      <input class="txt" id="numIn" placeholder="e.g. ji6 sap6 saam1  or  二十三" autocomplete="off">
       <div class="feedback" id="numFb"></div>
       <div class="row">
         <button class="act" onclick="checkNum()">Check</button>
         <button class="act ghost" onclick="newNum()">New number</button>
       </div>
-      <p class="hint">10=sap6, 20=ji6 sap6, 21=ji6 sap6 jat1, 100=jat1 baak3, 105=jat1 baak3 ling4 ng5, 110=jat1 baak3 jat1 sap6, 1000=jat1 cin1. (兩百 loeng5 baak3 also accepted for 200.)</p>
+      <p class="hint">Type Jyutping or 漢字 &mdash; either is correct. 23=ji6 sap6 saam1 / 二十三 &middot; 100=jat1 baak3 / 一百 &middot; 105=jat1 baak3 ling4 ng5 / 一百零五 &middot; 1000=jat1 cin1 / 一千. (兩百 / loeng5 baak3 also accepted for 200.)</p>
     </div>
   </div>
 
@@ -315,42 +315,42 @@ const CLF={
   "gaan1":["間","rooms, shops, buildings"]
 };
 
-/* === SENTENCES_START : English prompt + accepted Jyutping answers (spacing & tones flexible per app rules). Tutor extends on "sync my practice" === */
+/* === SENTENCES_START : Row = ["English prompt.", ["accepted jyutping","alt"], ["accepted 漢字","alt"]]. Both Jyutping AND characters are accepted as correct. Tutor extends on "sync my practice" === */
 const SENTENCES=[
-  ["Hello!",["nei5 hou2"]],
-  ["Good morning!",["zou2 san4"]],
-  ["Thank you (for your help).",["m4 goi1","m4 goi1 saai3"]],
-  ["Thank you (for the gift).",["do1 ze6","do1 ze6 saai3"]],
-  ["Sorry.",["deoi3 m4 zyu6"]],
-  ["I am Iris.",["ngo5 hai6 iris"]],
-  ["He is my friend.",["keoi5 hai6 ngo5 pang4 jau5","keoi5 hai6 ngo5 ge3 pang4 jau5"]],
-  ["I have money.",["ngo5 jau5 cin2"]],
-  ["I have no money.",["ngo5 mou5 cin2"]],
-  ["I want to eat.",["ngo5 soeng2 sik6 faan6","ngo5 soeng2 sik6 je5"]],
-  ["I want a cup of coffee.",["ngo5 soeng2 jiu3 jat1 bui1 gaa3 fe1","ngo5 soeng2 jat1 bui1 gaa3 fe1"]],
-  ["A cup of tea, please.",["m4 goi1 jat1 bui1 caa4"]],
-  ["The bill, please.",["m4 goi1 maai4 daan1","maai4 daan1"]],
-  ["How much is it?",["gei2 do1 cin2","gei2 do1 cin2 aa3"]],
-  ["Too expensive!",["taai3 gwai3 laa3","taai3 gwai3"]],
-  ["I don't eat beef.",["ngo5 m4 sik6 ngau4 juk6"]],
-  ["I like dim sum.",["ngo5 zung1 ji3 dim2 sam1"]],
-  ["Where are you going?",["nei5 heoi3 bin1 dou6","nei5 heoi3 bin1 dou6 aa3"]],
-  ["I'm going home.",["ngo5 faan1 uk1 kei2","ngo5 heoi3 uk1 kei2"]],
-  ["Where is the toilet?",["ci3 so2 hai2 bin1 dou6","ci3 so2 hai2 bin1 dou6 aa3"]],
-  ["What are you eating?",["nei5 sik6 mat1 je5","nei5 sik6 gan2 mat1 je5"]],
-  ["Can you speak Cantonese?",["nei5 sik1 m4 sik1 gong2 gwong2 dung1 waa2","nei5 sik1 gong2 gwong2 dung1 waa2 maa3"]],
-  ["I can speak a little.",["ngo5 sik1 gong2 di1 di1","sik1 gong2 di1 di1"]],
-  ["How are you?",["nei5 hou2 maa3","nei5 dim2 aa3"]],
-  ["I'm very tired.",["ngo5 hou2 gui6"]],
-  ["I'm very happy.",["ngo5 hou2 hoi1 sam1"]],
-  ["This is delicious!",["ni1 di1 hou2 sik6","hou2 sik6"]],
-  ["What time is it now?",["ji4 gaa1 gei2 dim2","ji4 gaa1 gei2 dim2 aa3"]],
-  ["See you tomorrow.",["ting1 jat6 gin3"]],
-  ["Take the bus.",["daap3 baa1 si2"]],
-  ["I want to drink tea.",["ngo5 soeng2 jam2 caa4"]],
-  ["Two cups of coffee.",["loeng5 bui1 gaa3 fe1"]],
-  ["I have two friends.",["ngo5 jau5 loeng5 go3 pang4 jau5"]],
-  ["He is not a student.",["keoi5 m4 hai6 hok6 saang1"]]
+  ["Hello!",["nei5 hou2"],["你好"]],
+  ["Good morning!",["zou2 san4"],["早晨"]],
+  ["Thank you (for your help).",["m4 goi1","m4 goi1 saai3"],["唔該","唔該晒"]],
+  ["Thank you (for the gift).",["do1 ze6","do1 ze6 saai3"],["多謝","多謝晒"]],
+  ["Sorry.",["deoi3 m4 zyu6"],["對唔住"]],
+  ["I am Iris.",["ngo5 hai6 iris"],["我係iris"]],
+  ["He is my friend.",["keoi5 hai6 ngo5 pang4 jau5","keoi5 hai6 ngo5 ge3 pang4 jau5"],["佢係我朋友","佢係我嘅朋友"]],
+  ["I have money.",["ngo5 jau5 cin2"],["我有錢"]],
+  ["I have no money.",["ngo5 mou5 cin2"],["我冇錢"]],
+  ["I want to eat.",["ngo5 soeng2 sik6 faan6","ngo5 soeng2 sik6 je5"],["我想食飯","我想食嘢"]],
+  ["I want a cup of coffee.",["ngo5 soeng2 jiu3 jat1 bui1 gaa3 fe1","ngo5 soeng2 jat1 bui1 gaa3 fe1"],["我想要一杯咖啡","我想一杯咖啡"]],
+  ["A cup of tea, please.",["m4 goi1 jat1 bui1 caa4"],["唔該一杯茶"]],
+  ["The bill, please.",["m4 goi1 maai4 daan1","maai4 daan1"],["唔該埋單","埋單"]],
+  ["How much is it?",["gei2 do1 cin2","gei2 do1 cin2 aa3"],["幾多錢","幾多錢呀"]],
+  ["Too expensive!",["taai3 gwai3 laa3","taai3 gwai3"],["太貴喇","太貴"]],
+  ["I don't eat beef.",["ngo5 m4 sik6 ngau4 juk6"],["我唔食牛肉"]],
+  ["I like dim sum.",["ngo5 zung1 ji3 dim2 sam1"],["我鍾意點心"]],
+  ["Where are you going?",["nei5 heoi3 bin1 dou6","nei5 heoi3 bin1 dou6 aa3"],["你去邊度","你去邊度呀"]],
+  ["I'm going home.",["ngo5 faan1 uk1 kei2","ngo5 heoi3 uk1 kei2"],["我返屋企","我去屋企"]],
+  ["Where is the toilet?",["ci3 so2 hai2 bin1 dou6","ci3 so2 hai2 bin1 dou6 aa3"],["廁所喺邊度","廁所喺邊度呀"]],
+  ["What are you eating?",["nei5 sik6 mat1 je5","nei5 sik6 gan2 mat1 je5"],["你食乜嘢","你食緊乜嘢"]],
+  ["Can you speak Cantonese?",["nei5 sik1 m4 sik1 gong2 gwong2 dung1 waa2","nei5 sik1 gong2 gwong2 dung1 waa2 maa3"],["你識唔識講廣東話","你識講廣東話嗎"]],
+  ["I can speak a little.",["ngo5 sik1 gong2 di1 di1","sik1 gong2 di1 di1"],["我識講啲啲","識講啲啲"]],
+  ["How are you?",["nei5 hou2 maa3","nei5 dim2 aa3"],["你好嗎","你點呀"]],
+  ["I'm very tired.",["ngo5 hou2 gui6"],["我好攰"]],
+  ["I'm very happy.",["ngo5 hou2 hoi1 sam1"],["我好開心"]],
+  ["This is delicious!",["ni1 di1 hou2 sik6","hou2 sik6"],["呢啲好食","好食"]],
+  ["What time is it now?",["ji4 gaa1 gei2 dim2","ji4 gaa1 gei2 dim2 aa3"],["而家幾點","而家幾點呀"]],
+  ["See you tomorrow.",["ting1 jat6 gin3"],["聽日見"]],
+  ["Take the bus.",["daap3 baa1 si2"],["搭巴士"]],
+  ["I want to drink tea.",["ngo5 soeng2 jam2 caa4"],["我想飲茶"]],
+  ["Two cups of coffee.",["loeng5 bui1 gaa3 fe1"],["兩杯咖啡"]],
+  ["I have two friends.",["ngo5 jau5 loeng5 go3 pang4 jau5"],["我有兩個朋友"]],
+  ["He is not a student.",["keoi5 m4 hai6 hok6 saang1"],["佢唔係學生"]]
 ];
 /* === SENTENCES_END === */
 
@@ -370,6 +370,23 @@ function numToYue(n){
     return s+" "+ctxTens(rem);
   }
   return "jat1 cin1";
+}
+/* Cantonese number generator 0-1000 (Chinese characters) — accepted alongside Jyutping */
+const HON=["零","一","二","三","四","五","六","七","八","九"];
+function ctxTensHon(n){ const t=Math.floor(n/10), o=n%10; return HON[t]+"十"+(o?HON[o]:""); }
+function numToHon(n){
+  if(n===0) return "零";
+  if(n<10) return HON[n];
+  if(n<20) return "十"+(n%10?HON[n%10]:"");
+  if(n<100) return ctxTensHon(n);
+  if(n<1000){
+    const h=Math.floor(n/100), rem=n%100;
+    let s=HON[h]+"百";
+    if(rem===0) return s;
+    if(rem<10) return s+"零"+HON[rem];
+    return s+ctxTensHon(rem);
+  }
+  return "一千";
 }
 
 const LS=window.localStorage;
@@ -414,6 +431,8 @@ const norm=s=>s.toLowerCase().replace(/[^a-z0-9]/g,"");
 /* toneless: letters only */
 const bare=s=>s.toLowerCase().replace(/[^a-z]/g,"");
 const nospace=s=>(s||"").replace(/\s+/g,"").trim();
+/* for matching Chinese-character answers: lowercase (for any latin), strip spaces & punctuation */
+const stripp=s=>(s||"").toLowerCase().replace(/[\s，。！？、,.!?·]/g,"");
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function clfLabel(c){ return c?(c+" "+(CLF[c]?CLF[c][0]:"")):""; }
 function pronHTML(v){
@@ -533,18 +552,22 @@ function newSent(skip){
 function endSent(){sIn.disabled=true;sNew.style.display="none";sCheck.style.display="none";sSkip.style.display="none";sNext.style.display="block";}
 function checkSent(){
   if(!sCur||sIn.disabled)return;
-  const exact=sCur[1].some(a=>norm(a)===norm(sIn.value));
-  const toneless=!/[0-9]/.test(sIn.value)&&bare(sIn.value)!==""&&sCur[1].some(a=>bare(a)===bare(sIn.value));
-  if(exact){sFb.style.color="var(--good)";sFb.innerHTML='正! <span class="jp">'+sCur[1][0]+'</span>';}
-  else if(toneless){sFb.style.color="var(--gold)";sFb.innerHTML='Right words &mdash; mind the tones: <span class="jp">'+sCur[1][0]+'</span>';}
-  else{sFb.style.color="var(--bad)";sFb.innerHTML='Answer: <span class="jp">'+sCur[1][0]+'</span>';recordMiss('[sentence] '+sCur[0]+' = '+sCur[1][0]);}
+  const val=sIn.value, han=sCur[2]||[];
+  const okJp=sCur[1].some(a=>norm(a)===norm(val));
+  const okHan=stripp(val)!==""&&han.some(a=>stripp(a)===stripp(val));
+  const exact=okJp||okHan;
+  const toneless=!exact&&!/[0-9]/.test(val)&&bare(val)!==""&&sCur[1].some(a=>bare(a)===bare(val));
+  const ans='<span class="jp">'+sCur[1][0]+'</span>'+(han.length?' &middot; '+han[0]:'');
+  if(exact){sFb.style.color="var(--good)";sFb.innerHTML='正! '+ans;}
+  else if(toneless){sFb.style.color="var(--gold)";sFb.innerHTML='Right words &mdash; mind the tones: '+ans;}
+  else{sFb.style.color="var(--bad)";sFb.innerHTML='Answer: '+ans;recordMiss('[sentence] '+sCur[0]+' = '+sCur[1][0]);}
   bump(sCur[0],exact||toneless);
   endSent();
 }
 function explainSent(){
   if(!sCur)return;
   sFb.style.color="var(--ink)";
-  sFb.innerHTML='<div class="explain"><div class="ew" style="font-size:18px;"><span class="jp">'+sCur[1][0]+'</span></div><div class="ep">'+sCur[0]+'</div></div>';
+  sFb.innerHTML='<div class="explain"><div class="ew" style="font-size:20px;">'+((sCur[2]&&sCur[2].length)?sCur[2][0]+' ':'')+'<span class="jp" style="font-size:16px;">'+sCur[1][0]+'</span></div><div class="ep">'+sCur[0]+'</div></div>';
   recordNew('[sentence] '+sCur[0]+' = '+sCur[1][0]);
   mastery[sCur[0]]={n:0,due:null};saveMastery();
   endSent();
@@ -558,10 +581,15 @@ function numVariants(n){
   if(base.indexOf("ji6 baak3")===0) v.push(base.replace("ji6 baak3","loeng5 baak3"));
   return v;
 }
+function hanNumVariants(n){ const b=numToHon(n); const v=[b]; if(b.indexOf("二百")===0) v.push(b.replace("二百","兩百")); return v; }
 function checkNum(){
-  const ok=numVariants(numCur).some(a=>norm(a)===norm(numIn.value));
-  if(ok){stats.correct++;saveStats();numFb.innerHTML='正! <span class="jp">'+numToYue(numCur)+'</span>';numFb.style.color="var(--good)";}
-  else{numFb.innerHTML='Answer: <span class="jp">'+numToYue(numCur)+'</span>';numFb.style.color="var(--bad)";recordMiss(numCur+' = '+numToYue(numCur));}
+  const jp=numToYue(numCur), han=numToHon(numCur);
+  const okJp=numVariants(numCur).some(a=>norm(a)===norm(numIn.value));
+  const okHan=stripp(numIn.value)!==""&&hanNumVariants(numCur).some(a=>stripp(a)===stripp(numIn.value));
+  const ok=okJp||okHan;
+  const ans='<span class="jp">'+jp+'</span> &middot; '+han;
+  if(ok){stats.correct++;saveStats();numFb.innerHTML='正! '+ans;numFb.style.color="var(--good)";}
+  else{numFb.innerHTML='Answer: '+ans;numFb.style.color="var(--bad)";recordMiss(numCur+' = '+jp);}
 }
 
 /* CLASSIFIERS */

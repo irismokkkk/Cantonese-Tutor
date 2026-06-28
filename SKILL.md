@@ -119,9 +119,14 @@ When she says "sync my practice":
      (the app's "explain it" button shows these). Keep Jyutping lowercase with
      tone numbers and spaces between syllables; keep example EN ASCII-safe.
    - `SENTENCES` array is between `/* === SENTENCES_START ... === */` and
-     `/* === SENTENCES_END === */`. Row = `["English prompt.",["accepted jyutping","alt"]]`.
-     APPEND new spoken sentences from recent themes. Accept tone-marked Jyutping;
-     spacing is flexible (the app ignores spaces).
+     `/* === SENTENCES_END === */`. Row =
+     `["English prompt.", ["accepted jyutping","alt"], ["accepted 漢字","alt"]]`.
+     The app accepts **either Jyutping OR the Chinese characters** as correct, so EVERY new
+     row MUST include the 3rd element (the colloquial character form; add an alt with/without
+     a final particle 呀/啦 where natural). APPEND new spoken sentences from recent themes.
+     Jyutping is tone-marked & spacing-flexible; character matching ignores spaces/punctuation.
+   - **Numbers tab needs no data:** it auto-accepts both Jyutping (`numToYue`) and characters
+     (`numToHon`) for 0-1000 — nothing to maintain there.
    Only append; never delete; keep arrays valid JavaScript.
    - **Deploy to her phone (auto-update):** after editing `practice.html`, copy it to
      `C:\Users\IrisMo\cantonese-phone-app\index.html`, then
